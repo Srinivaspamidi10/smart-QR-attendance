@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan QR</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .scanner-wrapper{
+            width:95%;
+            max-width:700px;
+            margin:auto;
+            text-align:center;
+        }
+
+        .scanner-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:30px;
+            box-shadow:0 15px 45px rgba(0,0,0,0.4);
+        }
+
+        .scanner-box{
+            position:relative;
+            margin-top:25px;
+            border-radius:20px;
+            overflow:hidden;
+            border:4px solid #00c6ff;
+        }
+
+        #reader{
+            width:100%;
+        }
+
+        .scan-line{
+            position:absolute;
+            left:0;
+            width:100%;
+            height:4px;
+            background:#00ff99;
+            box-shadow:0 0 15px #00ff99;
+            animation:scan 2s linear infinite;
+            z-index:10;
+        }
+
+        @keyframes scan{
+
+            0%{
+                top:0;
+            }
+
+            100%{
+                top:100%;
+            }
+
+        }
+
+        .status{
+            margin-top:18px;
+            font-size:18px;
+            font-weight:bold;
+            color:#00ff99;
+        }
+
+        .tip-box{
+            background:rgba(255,255,255,0.10);
+            padding:18px;
+            border-radius:18px;
+            margin-top:25px;
+        }
+
+        @media screen and (max-width:768px){
+
+            .scanner-card{
+                padding:20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="scanner-wrapper">
+
+    <div class="scanner-card">
+
+        <h1>📷 Smart QR Scanner</h1>
+
+        <p>
+            Point your camera at lecturer QR code to submit attendance.
+        </p>
+
+        <div class="scanner-box">
+
+            <div class="scan-line"></div>
+
+            <div id="reader"></div>
+
+        </div>
+
+        <div class="status"
+             id="status">
+            Scanner starting...
+        </div>
+
+        <div class="tip-box">
+
+            <h3>Tips</h3>
+
+            <p>
+                ✅ Hold camera steady<br>
+                ✅ Ensure QR is clearly visible<br>
+                ✅ Allow camera permission
+            </p>
+
+        </div>
+
+        <br>
+
+        <a href="/student_portal"
+           class="btn">
+            Back to Portal
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+function onScanSuccess(decodedText){
+
+    document.getElementById(
+        "status"
+    ).innerHTML =
+        "✅ QR Scanned Successfully";
+
+    setTimeout(function(){
+
+        window.location.href =
+            decodedText;
+
+    },1000);
+
+}
+
+function onScanFailure(error){
+
+}
+
+let scanner =
+    new Html5QrcodeScanner(
+
+        "reader",
+
+        {
+            fps:10,
+            qrbox:250
+        },
+
+        false
+
+    );
+
+scanner.render(
+    onScanSuccess,
+    onScanFailure
+);
+
+</script>
+
+</body>
+</html>

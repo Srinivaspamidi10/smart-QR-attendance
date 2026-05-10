@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Sessions</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+
+        .sessions-wrapper {
+            width: 95%;
+            max-width: 1200px;
+            margin: auto;
+            padding-top: 30px;
+        }
+
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .session-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(16px);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+            transition: 0.3s;
+        }
+
+        .session-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .session-code {
+            color: #00c6ff;
+            font-weight: bold;
+        }
+
+        .status {
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .card-actions .btn {
+            display: inline-block;
+            margin: 6px;
+            padding: 10px 14px;
+            font-size: 14px;
+        }
+
+        .top-actions {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .attendance-link {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            word-break: break-all;
+        }
+
+        .attendance-link a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            background: #0ea5e9;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sessions-wrapper">
+
+    <h1>📚 My Attendance Sessions</h1>
+
+    <form method="GET">
+        <input type="text"
+               name="search"
+               placeholder="Search Subject / Class / Code">
+
+        <button type="submit">
+            Search
+        </button>
+    </form>
+
+    <div class="sessions-grid">
+
+        {% for s in sessions_data %}
+
+        <div class="session-card">
+
+            <h2>{{ s[0] }}</h2>
+
+            <p><b>Class:</b> {{ s[1] }}</p>
+
+            <p>
+                <b>Code:</b>
+                <span class="session-code">{{ s[2] }}</span>
+            </p>
+
+            <p><b>Created:</b> {{ s[3] }}</p>
+
+            <p><b>Expires:</b> {{ s[4] }}</p>
+
+            <p class="status">
+                <script>
+
+                    var expiry =
+                        new Date("{{ s[4] }}").getTime();
+
+                    var now =
+                        new Date().getTime();
+
+                    if (now < expiry) {
+
+                        document.write("🟢 Active");
+
+                    } else {
+
+                        document.write("🔴 Expired");
+
+                    }
+
+                </script>
+            </p>
+
+            <!-- STUDENT ATTENDANCE LINK -->
+
+            <div class="attendance-link">
+
+                <b>Student Mobile Link:</b><br><br>
+
+                <a id="link{{ loop.index }}"
+                   href="{{ request.host_url }}mark_attendance/{{ s[2] }}"
+                   target="_blank">
+
+                    {{ request.host_url }}mark_attendance/{{ s[2] }}
+
+                </a>
+
+                <br>
+
+                <button class="copy-btn"
+                        onclick="copyLink('link{{ loop.index }}')">
+
+                    Copy Link
+
+                </button>
+
+            </div>
+
+            <!-- PORTAL LINKS -->
+
+            <div class="attendance-link">
+
+                <b>Portal Links for Mobile:</b><br><br>
+
+                <a href="{{ request.host_url }}student_login"
+                   target="_blank">
+
+                    Student Portal
+
+                </a>
+
+                <br><br>
+
+                <a href="{{ request.host_url }}lecturer_login"
+                   target="_blank">
+
+                    Lecturer Portal
+
+                </a>
+
+                <br><br>
+
+                <a href="{{ request.host_url }}scan_qr"
+                   target="_blank">
+
+                    QR Scanner Portal
+
+                </a>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="card-actions">
+
+                <a href="/qr/{{ s[2] }}"
+                   class="btn">
+
+                    QR
+
+                </a>
+
+                <a href="/mark_attendance/{{ s[2] }}"
+                   class="btn"
+                   target="_blank">
+
+                    Open Attendance
+
+                </a>
+
+                <a href="/dashboard/{{ s[2] }}"
+                   class="btn">
+
+                    Dashboard
+
+                </a>
+
+                <a href="/live_monitor/{{ s[2] }}"
+                   class="btn">
+
+                    Live Monitor
+
+                </a>
+
+                <a href="/send_session_email/{{ s[2] }}"
+                   class="btn">
+
+                    Send Email
+
+                </a>
+
+                <a href="/extend_session/{{ s[2] }}/5"
+                   class="btn">
+
+                    +5 Min
+
+                </a>
+
+                <a href="/extend_session/{{ s[2] }}/10"
+                   class="btn">
+
+                    +10 Min
+
+                </a>
+
+                <a href="/extend_session/{{ s[2] }}/30"
+                   class="btn">
+
+                    +30 Min
+
+                </a>
+
+                <a href="/delete_session/{{ s[2] }}"
+                   class="btn"
+                   onclick="return confirm('Delete this session?')">
+
+                    Delete
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="top-actions">
+
+        <a href="/lecturer"
+           class="btn">
+
+            Create QR
+
+        </a>
+
+        <a href="/lecturer_portal"
+           class="btn">
+
+            Back to Portal
+
+        </a>
+
+        <a href="/logout"
+           class="btn">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+function copyLink(id) {
+
+    var text =
+        document.getElementById(id).href;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Attendance Link Copied!");
+
+}
+
+</script>
+
+</body>
+</html>

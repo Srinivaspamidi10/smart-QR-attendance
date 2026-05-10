@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Attendance Session</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .qr-container{
+            width:95%;
+            max-width:900px;
+            margin:auto;
+            text-align:center;
+        }
+
+        .qr-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:30px;
+            padding:35px;
+            box-shadow:0 15px 45px rgba(0,0,0,0.4);
+        }
+
+        .qr-image{
+            width:320px;
+            border-radius:25px;
+            background:white;
+            padding:20px;
+            margin-top:20px;
+            animation:float 3s ease-in-out infinite;
+        }
+
+        @keyframes float{
+            0%{
+                transform:translateY(0px);
+            }
+            50%{
+                transform:translateY(-10px);
+            }
+            100%{
+                transform:translateY(0px);
+            }
+        }
+
+        .info-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+            gap:20px;
+            margin-top:30px;
+        }
+
+        .info-card{
+            background:rgba(255,255,255,0.10);
+            border-radius:20px;
+            padding:20px;
+        }
+
+        .countdown{
+            font-size:30px;
+            font-weight:bold;
+            color:#00ff99;
+            margin-top:15px;
+        }
+
+        .link-box{
+            margin-top:25px;
+        }
+
+        .link-input{
+            width:85%;
+            padding:12px;
+            border:none;
+            border-radius:12px;
+            margin-bottom:12px;
+            font-size:15px;
+        }
+
+        @media screen and (max-width:768px){
+
+            .qr-image{
+                width:220px;
+            }
+
+            .countdown{
+                font-size:24px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="qr-container">
+
+    <div class="qr-card">
+
+        <h1>📷 Attendance QR Session</h1>
+
+        <p>
+            Students can scan this QR to submit attendance securely.
+        </p>
+
+        <img src="{{ url_for('static',
+                 filename='qrcodes/' + code + '.png') }}"
+             class="qr-image">
+
+        <div class="countdown"
+             id="countdown">
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <h3>Session Code</h3>
+                <p>{{ code }}</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Expires At</h3>
+                <p>{{ expires_at }}</p>
+            </div>
+
+        </div>
+
+        <div class="link-box">
+
+            <input type="text"
+                   id="attendanceLink"
+                   class="link-input"
+                   readonly
+                   value="http://10.33.16.9:5000/student/{{ code }}">
+
+            <br>
+
+            <button onclick="copyLink()">
+                Copy Attendance Link
+            </button>
+
+        </div>
+
+        <br>
+
+        <a href="/dashboard/{{ code }}"
+           class="btn">
+            Open Dashboard
+        </a>
+
+        <a href="/lecturer_sessions"
+           class="btn">
+            My Sessions
+        </a>
+
+        <a href="/lecturer_portal"
+           class="btn">
+            Back to Portal
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+function copyLink(){
+
+    const input =
+        document.getElementById(
+            "attendanceLink"
+        );
+
+    input.select();
+
+    document.execCommand("copy");
+
+    alert("Attendance link copied!");
+}
+
+const expiry =
+    new Date(
+        "{{ expires_at }}"
+    ).getTime();
+
+setInterval(function(){
+
+    const now =
+        new Date().getTime();
+
+    const distance =
+        expiry - now;
+
+    if(distance < 0){
+
+        document.getElementById(
+            "countdown"
+        ).innerHTML =
+            "🔴 QR Expired";
+
+        return;
+    }
+
+    const minutes =
+        Math.floor(
+            (distance % (1000 * 60 * 60))
+            / (1000 * 60)
+        );
+
+    const seconds =
+        Math.floor(
+            (distance % (1000 * 60))
+            / 1000
+        );
+
+    document.getElementById(
+        "countdown"
+    ).innerHTML =
+        "⏳ " +
+        minutes +
+        "m " +
+        seconds +
+        "s";
+
+},1000);
+
+</script>
+
+</body>
+</html>

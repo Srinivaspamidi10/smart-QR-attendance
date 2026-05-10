@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="box">
+    <h1>Admin Panel</h1>
+
+    <div class="card">
+        <h2>Total Lecturers: {{ lecturers_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h2>Total Students: {{ students_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h2>Total Sessions: {{ sessions_count }}</h2>
+    </div>
+
+    <div class="card">
+        <h2>Total Attendance: {{ attendance_count }}</h2>
+    </div>
+
+    <a href="/admin_lecturers" class="btn">View Lecturers</a>
+    <a href="/admin_students" class="btn">View Students</a>
+    <a href="/admin_sessions" class="btn">View Sessions</a>
+    <a href="/admin_attendance" class="btn">View Attendance</a>
+    <a href="/logout" class="btn">Logout</a>
+</div>
+
+</body>
+</html>

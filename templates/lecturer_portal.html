@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lecturer Portal</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .portal-container{
+            width:95%;
+            max-width:1200px;
+            margin:auto;
+            padding-top:40px;
+        }
+
+        .top-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 10px 40px rgba(0,0,0,0.4);
+            margin-bottom:35px;
+            flex-wrap:wrap;
+        }
+
+        .lecturer-info h1{
+            margin:0;
+            font-size:38px;
+        }
+
+        .lecturer-info p{
+            color:#dbeafe;
+            margin-top:8px;
+        }
+
+        .lecturer-avatar{
+            width:90px;
+            height:90px;
+            border-radius:50%;
+            background:linear-gradient(135deg,#00c6ff,#0072ff);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-size:40px;
+            box-shadow:0 0 25px rgba(0,198,255,0.8);
+        }
+
+        .card-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:30px;
+        }
+
+        .action-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:30px;
+            text-align:center;
+            transition:0.3s;
+            box-shadow:0 10px 35px rgba(0,0,0,0.35);
+        }
+
+        .action-card:hover{
+            transform:translateY(-10px);
+        }
+
+        .card-icon{
+            font-size:55px;
+            margin-bottom:15px;
+        }
+
+        .action-card h2{
+            margin-bottom:12px;
+        }
+
+        .action-card p{
+            color:#dbeafe;
+            min-height:55px;
+        }
+
+        .action-card .btn{
+            width:85%;
+            margin:auto;
+            margin-top:15px;
+        }
+
+        @media screen and (max-width:768px){
+
+            .top-card{
+                text-align:center;
+                justify-content:center;
+                gap:20px;
+            }
+
+            .lecturer-info h1{
+                font-size:28px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="portal-container">
+
+    <div class="top-card">
+
+        <div class="lecturer-info">
+
+            <h1>
+                Welcome {{ session["lecturer_name"] }}
+            </h1>
+
+            <p>
+                Manage attendance sessions professionally.
+            </p>
+
+        </div>
+
+        <div class="lecturer-avatar">
+            👨‍🏫
+        </div>
+
+    </div>
+
+    <div class="card-grid">
+
+        <div class="action-card">
+
+            <div class="card-icon">
+                📷
+            </div>
+
+            <h2>Create QR</h2>
+
+            <p>
+                Generate smart attendance QR sessions with GPS protection.
+            </p>
+
+            <a href="/lecturer"
+               class="btn">
+                Create Session
+            </a>
+
+        </div>
+
+        <div class="action-card">
+
+            <div class="card-icon">
+                📚
+            </div>
+
+            <h2>My Sessions</h2>
+
+            <p>
+                View attendance records, analytics, CSV reports, and session history.
+            </p>
+
+            <a href="/lecturer_sessions"
+               class="btn">
+                Open Sessions
+            </a>
+
+        </div>
+
+        <div class="action-card">
+
+            <div class="card-icon">
+                🚪
+            </div>
+
+            <h2>Logout</h2>
+
+            <p>
+                Securely logout from your lecturer attendance portal.
+            </p>
+
+            <a href="/logout"
+               class="btn">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

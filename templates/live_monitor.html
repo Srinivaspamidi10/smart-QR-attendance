@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Classroom Monitoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <meta http-equiv="refresh" content="5">
+</head>
+<body>
+
+<div class="box">
+    <h1>🔴 Live Classroom Monitoring</h1>
+
+    <h2>{{ subject }} - {{ class_name }}</h2>
+
+    <h3>Total Present: {{ total }}</h3>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Department</th>
+            <th>Time</th>
+            <th>GPS</th>
+        </tr>
+
+        {% for r in records %}
+        <tr>
+            <td>{{ r[0] }}</td>
+            <td>{{ r[1] }}</td>
+            <td>{{ r[2] }}</td>
+            <td>{{ r[3] }}</td>
+            <td>{{ r[4] }}, {{ r[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+
+    <a href="/lecturer_sessions" class="btn">Back</a>
+</div>
+
+</body>
+</html>

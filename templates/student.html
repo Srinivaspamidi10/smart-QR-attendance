@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Attendance</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .attendance-wrapper{
+            width:95%;
+            max-width:700px;
+            margin:auto;
+        }
+
+        .attendance-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:30px;
+            text-align:center;
+            box-shadow:0 15px 45px rgba(0,0,0,0.4);
+        }
+
+        .camera-box{
+            margin-top:20px;
+            border-radius:20px;
+            overflow:hidden;
+            border:3px solid #00c6ff;
+        }
+
+        video{
+            width:100%;
+            border-radius:20px;
+        }
+
+        #selfiePreview{
+            width:180px;
+            border-radius:20px;
+            margin-top:20px;
+            border:3px solid #00ff99;
+            display:none;
+        }
+
+        .status-box{
+            background:rgba(255,255,255,0.10);
+            padding:18px;
+            border-radius:18px;
+            margin-top:20px;
+        }
+
+        .status{
+            font-weight:bold;
+            margin-top:10px;
+        }
+
+        .success{
+            color:#00ff99;
+        }
+
+        .error{
+            color:#ff4d4d;
+        }
+
+        #submitBtn{
+            opacity:0.5;
+            pointer-events:none;
+        }
+
+        @media screen and (max-width:768px){
+
+            .attendance-card{
+                padding:20px;
+            }
+
+            #selfiePreview{
+                width:140px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="attendance-wrapper">
+
+    <div class="attendance-card">
+
+        <h1>🎓 Submit Attendance</h1>
+
+        <p>
+            Capture your selfie and location to submit secure attendance.
+        </p>
+
+        <h3 id="timer"></h3>
+
+        <form method="POST">
+
+            <div class="camera-box">
+
+                <video id="video"
+                       autoplay
+                       playsinline>
+                </video>
+
+            </div>
+
+            <br>
+
+            <button type="button"
+                    onclick="captureSelfie()">
+                Capture Selfie
+            </button>
+
+            <canvas id="canvas"
+                    style="display:none;">
+            </canvas>
+
+            <img id="selfiePreview">
+
+            <input type="hidden"
+                   name="selfie_data"
+                   id="selfie_data">
+
+            <div class="status-box">
+
+                <h3>Verification Status</h3>
+
+                <p id="locationStatus"
+                   class="status error">
+                    ❌ Location not captured
+                </p>
+
+                <p id="selfieStatus"
+                   class="status error">
+                    ❌ Selfie not captured
+                </p>
+
+            </div>
+
+            <input type="hidden"
+                   name="student_latitude"
+                   id="student_latitude">
+
+            <input type="hidden"
+                   name="student_longitude"
+                   id="student_longitude">
+
+            <br>
+
+            <button type="button"
+                    onclick="captureLocation()">
+                Capture Location
+            </button>
+
+            <br><br>
+
+            <button type="submit"
+                    id="submitBtn">
+                Submit Attendance
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="/student_portal"
+           class="btn">
+            Back to Portal
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+let selfieCaptured = false;
+let locationCaptured = false;
+
+const video =
+    document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({
+    video:true
+})
+.then(function(stream){
+
+    video.srcObject = stream;
+
+})
+.catch(function(error){
+
+    alert("Camera access denied.");
+
+});
+
+function captureSelfie(){
+
+    const canvas =
+        document.getElementById(
+            "canvas"
+        );
+
+    const ctx =
+        canvas.getContext("2d");
+
+    canvas.width = 320;
+    canvas.height = 240;
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        320,
+        240
+    );
+
+    const imageData =
+    canvas.toDataURL(
+        "image/jpeg",
+        0.5
+    );
+
+    document.getElementById(
+        "selfie_data"
+    ).value =
+        imageData;
+
+    const preview =
+        document.getElementById(
+            "selfiePreview"
+        );
+
+    preview.src =
+        imageData;
+
+    preview.style.display =
+        "block";
+
+    selfieCaptured = true;
+
+    document.getElementById(
+        "selfieStatus"
+    ).innerHTML =
+        "✅ Selfie captured";
+
+    document.getElementById(
+        "selfieStatus"
+    ).className =
+        "status success";
+
+    enableSubmit();
+
+}
+
+function retakeSelfie(){
+
+    document.getElementById(
+        "selfiePreview"
+    ).style.display = "none";
+
+    document.getElementById(
+        "selfie_data"
+    ).value = "";
+
+    selfieCaptured = false;
+
+    document.getElementById(
+        "selfieStatus"
+    ).innerHTML =
+        "❌ Selfie not captured";
+
+    document.getElementById(
+        "selfieStatus"
+    ).className =
+        "status error";
+
+    const btn =
+        document.getElementById(
+            "submitBtn"
+        );
+
+    btn.style.opacity = "0.5";
+    btn.style.pointerEvents = "none";
+
+}
+
+function captureLocation(){
+
+    if(!navigator.geolocation){
+
+        alert("GPS not supported.");
+
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            document.getElementById(
+                "student_latitude"
+            ).value =
+                position.coords.latitude;
+
+            document.getElementById(
+                "student_longitude"
+            ).value =
+                position.coords.longitude;
+
+            locationCaptured = true;
+
+            document.getElementById(
+                "locationStatus"
+            ).innerHTML =
+                "✅ Location captured";
+
+            document.getElementById(
+                "locationStatus"
+            ).className =
+                "status success";
+
+            enableSubmit();
+
+        },
+
+        function(error){
+
+            alert(
+                "Allow location permission."
+            );
+
+        }
+
+    );
+
+}
+
+function enableSubmit(){
+
+    if(
+        selfieCaptured &&
+        locationCaptured
+    ){
+
+        const btn =
+            document.getElementById(
+                "submitBtn"
+            );
+
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+
+    }
+
+}
+
+const expiry =
+    new Date(
+        "{{ expires_at }}"
+    ).getTime();
+
+setInterval(function(){
+
+    const now =
+        new Date().getTime();
+
+    const distance =
+        expiry - now;
+
+    if(distance < 0){
+
+        document.getElementById(
+            "timer"
+        ).innerHTML =
+            "🔴 QR Expired";
+
+        return;
+    }
+
+    const minutes =
+        Math.floor(
+            (distance % (1000 * 60 * 60))
+            / (1000 * 60)
+        );
+
+    const seconds =
+        Math.floor(
+            (distance % (1000 * 60))
+            / 1000
+        );
+
+    let text =
+        "⏳ " +
+        minutes +
+        "m " +
+        seconds +
+        "s remaining";
+
+    if(distance < 60000){
+
+        text =
+            "⚠ Expiring Soon: " +
+            minutes +
+            "m " +
+            seconds +
+            "s";
+
+    }
+
+    document.getElementById(
+        "timer"
+    ).innerHTML =
+        text;
+
+},1000);
+
+</script>
+
+</body>
+</html>

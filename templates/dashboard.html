@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .dashboard-wrapper{
+            width:95%;
+            max-width:1300px;
+            margin:auto;
+        }
+
+        .top-grid{
+            display:grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(250px,1fr));
+            gap:25px;
+            margin-top:25px;
+        }
+
+        .info-card,
+        .live-box,
+        .chart-box,
+        .table-box{
+            padding:25px;
+            border-radius:25px;
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(12px);
+            box-shadow:0 0 25px rgba(0,0,0,0.3);
+        }
+
+        .live-box{
+            text-align:center;
+        }
+
+        .live-count{
+            color:#00c6ff;
+            font-size:65px;
+            margin:10px 0;
+            font-weight:bold;
+        }
+
+        .verified{
+            color:limegreen;
+            font-weight:bold;
+        }
+
+        .suspicious{
+            color:orange;
+            font-weight:bold;
+        }
+
+        .selfie-img{
+            border-radius:50%;
+            object-fit:cover;
+            cursor:pointer;
+            border:3px solid #00c6ff;
+            transition:0.3s;
+        }
+
+        .selfie-img:hover{
+            transform:scale(1.1);
+        }
+
+        .table-box{
+            margin-top:25px;
+        }
+
+        table{
+            width:100%;
+            margin-top:20px;
+        }
+
+        .button-group{
+            margin-top:25px;
+            text-align:center;
+        }
+
+        .button-group .btn{
+            margin:8px;
+        }
+
+        @media screen and (max-width:768px){
+
+            .live-count{
+                font-size:45px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <h1>
+        📊 Attendance Dashboard
+    </h1>
+
+    <div class="top-grid">
+
+        <!-- SESSION INFO -->
+
+        <div class="info-card">
+
+            <h2>📚 Session Info</h2>
+
+            {% if session_info %}
+
+            <p>
+                <b>Subject:</b>
+                {{ session_info[0] }}
+            </p>
+
+            <p>
+                <b>Class:</b>
+                {{ session_info[1] }}
+            </p>
+
+            <p>
+                <b>Created:</b>
+                {{ session_info[2] }}
+            </p>
+
+            <p>
+                <b>Expires:</b>
+                {{ session_info[3] }}
+            </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- LIVE COUNTER -->
+
+        <div class="live-box">
+
+            <h2>
+                👨‍🎓 Live Attendance
+            </h2>
+
+            <div class="live-count">
+                {{ total_present }}
+            </div>
+
+            <p>
+                Students Present
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- CHART -->
+
+    <div class="chart-box">
+
+        <h2>
+            📈 Attendance Analytics
+        </h2>
+
+        <canvas id="attendanceChart"></canvas>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-box">
+
+        <h2>
+            🎓 Student Attendance Records
+        </h2>
+
+        <form method="GET">
+
+            <input type="text"
+                   name="search"
+                   placeholder="Search Name / Roll No / Department">
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+        <table>
+
+            <tr>
+
+                <th>Selfie</th>
+
+                <th>Name</th>
+
+                <th>Roll No</th>
+
+                <th>Department</th>
+
+                <th>Submitted Time</th>
+
+                <th>Distance</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            {% for row in records %}
+
+            <tr>
+
+                <td>
+
+                    {% if row[5] %}
+
+                    <a href="/{{ row[5] }}"
+                       target="_blank">
+
+                        <img src="/{{ row[5] }}"
+                             width="70"
+                             height="70"
+                             class="selfie-img">
+
+                    </a>
+
+                    {% else %}
+
+                    No Image
+
+                    {% endif %}
+
+                </td>
+
+                <td>{{ row[0] }}</td>
+
+                <td>{{ row[1] }}</td>
+
+                <td>{{ row[2] }}</td>
+
+                <td>{{ row[3] }}</td>
+
+                <td>{{ row[4] }} m</td>
+
+                <td>
+
+                    {% if row[4] > 80 %}
+
+                    <span class="suspicious">
+                        ⚠ Suspicious
+                    </span>
+
+                    {% else %}
+
+                    <span class="verified">
+                        ✅ Verified
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <!-- BUTTONS -->
+
+    <div class="button-group">
+
+        <a href="/download/{{ code }}"
+           class="btn">
+            Download CSV
+        </a>
+
+        <a href="/qr/{{ code }}"
+           class="btn">
+            View QR
+        </a>
+
+        <a href="/lecturer_sessions"
+           class="btn">
+            My Sessions
+        </a>
+
+        <a href="/lecturer_portal"
+           class="btn">
+            Back to Portal
+        </a>
+
+    </div>
+
+</div>
+
+<!-- CHART -->
+
+<script>
+
+const ctx =
+    document.getElementById(
+        'attendanceChart'
+    );
+
+new Chart(ctx, {
+
+    type:'bar',
+
+    data:{
+
+        labels:['Present Students'],
+
+        datasets:[{
+
+            label:'Attendance Count',
+
+            data:[
+                {{ total_present }}
+            ],
+
+            backgroundColor:[
+                '#00c6ff'
+            ]
+
+        }]
+
+    }
+
+});
+
+setInterval(function () {
+
+    location.reload();
+
+}, 5000);
+
+</script>
+<a href="/download_pdf/{{ code }}" class="btn">
+    Download PDF
+</a>
+
+</body>
+</html>

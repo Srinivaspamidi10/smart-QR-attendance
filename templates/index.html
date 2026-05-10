@@ -1,0 +1,199 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Smart QR Attendance</title>
+
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
+
+        <style>
+
+            body {
+                background:
+                    radial-gradient(circle at top left, #00c6ff55, transparent 30%),
+                    radial-gradient(circle at bottom right, #0072ff55, transparent 30%),
+                    linear-gradient(135deg, #0f172a, #1e293b);
+            }
+
+            .home-wrapper {
+                width: 100%;
+                text-align: center;
+            }
+
+            .home-title {
+                font-size: 42px;
+                margin-bottom: 8px;
+            }
+
+            .home-subtitle {
+                color: #dbeafe;
+                margin-bottom: 40px;
+            }
+
+            .portal-container {
+                display: flex;
+                justify-content: center;
+                align-items: stretch;
+                gap: 35px;
+                flex-wrap: wrap;
+            }
+
+            .portal-box {
+                width: 380px;
+                min-height: 430px;
+                padding: 35px;
+                border-radius: 25px;
+                background: rgba(255,255,255,0.13);
+                backdrop-filter: blur(18px);
+                box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+                border: 1px solid rgba(255,255,255,0.25);
+                transition: 0.3s ease;
+            }
+
+            .portal-box:hover {
+                transform: translateY(-10px);
+            }
+
+            .portal-icon {
+                width: 85px;
+                height: 85px;
+                margin: auto;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 38px;
+                background: linear-gradient(135deg, #00c6ff, #0072ff);
+                box-shadow: 0 0 25px rgba(0,198,255,0.8);
+            }
+
+            .portal-box h2 {
+                margin-top: 25px;
+                font-size: 28px;
+            }
+
+            .portal-box p {
+                color: #dbeafe;
+                line-height: 1.6;
+                min-height: 55px;
+            }
+
+            .portal-actions .btn {
+                width: 230px;
+                margin: 9px auto;
+                display: block;
+                font-weight: bold;
+            }
+
+            .secondary-btn {
+                background: transparent;
+                border: 1px solid #00c6ff;
+            }
+
+            .secondary-btn:hover {
+                background: #00c6ff;
+            }
+
+            @media screen and (max-width: 768px) {
+
+                .home-title {
+                    font-size: 30px;
+                }
+
+                .portal-box {
+                    width: 85%;
+                    min-height: auto;
+                }
+
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <div class="home-wrapper">
+
+        <h1 class="home-title">
+            Smart QR Attendance System
+        </h1>
+
+        <p class="home-subtitle">
+            Fast • Secure • Digital Attendance Management
+        </p>
+
+        <div class="portal-container">
+
+            <!-- Lecturer Portal -->
+
+            <div class="portal-box">
+
+                <div class="portal-icon">
+                    👨‍🏫
+                </div>
+
+                <h2>Lecturer Portal</h2>
+
+                <p>
+                    Create QR attendance sessions,
+                    monitor live records,
+                    download reports,
+                    and manage class attendance.
+                </p>
+
+                <div class="portal-actions">
+
+                    <a href="/lecturer_login"
+                    class="btn">
+                        Lecturer Login
+                    </a>
+
+                    <a href="/lecturer_register"
+                    class="btn secondary-btn">
+                        Create Lecturer Account
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Student Portal -->
+
+            <div class="portal-box">
+
+                <div class="portal-icon">
+                    🎓
+                </div>
+
+                <h2>Student Portal</h2>
+
+                <p>
+                    Login securely,
+                    view attendance history,
+                    scan QR codes,
+                    and track attendance percentage.
+                </p>
+
+                <div class="portal-actions">
+
+                    <a href="/student_login"
+                    class="btn">
+                        Student Login
+                    </a>
+
+                    <a href="/student_register"
+                    class="btn secondary-btn">
+                        Create Student Account
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </body>
+    </html>

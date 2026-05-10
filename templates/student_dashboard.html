@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body{
+            background:
+                linear-gradient(135deg,#0f172a,#1e293b);
+        }
+
+        .dashboard-wrapper{
+            width:95%;
+            max-width:1300px;
+            margin:auto;
+            padding-top:30px;
+        }
+
+        .top-section{
+            display:grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(250px,1fr));
+            gap:25px;
+        }
+
+        .stats-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:25px;
+            text-align:center;
+            box-shadow:0 10px 35px rgba(0,0,0,0.35);
+        }
+
+        .stats-card h1{
+            margin:0;
+            font-size:40px;
+            color:#00ff99;
+        }
+
+        .stats-card p{
+            color:#dbeafe;
+        }
+
+        .chart-card{
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            border-radius:25px;
+            padding:30px;
+            margin-top:30px;
+            box-shadow:0 10px 35px rgba(0,0,0,0.35);
+        }
+
+        .subjects-grid{
+            display:grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(250px,1fr));
+            gap:25px;
+            margin-top:25px;
+        }
+
+        .subject-card{
+            background:rgba(255,255,255,0.10);
+            border-radius:20px;
+            padding:20px;
+            text-align:center;
+        }
+
+        .subject-card h2{
+            margin-bottom:10px;
+        }
+
+        .progress-bar{
+            width:100%;
+            height:14px;
+            background:#1e293b;
+            border-radius:10px;
+            overflow:hidden;
+            margin-top:15px;
+        }
+
+        .progress-fill{
+            height:100%;
+            background:linear-gradient(
+                90deg,
+                #00c6ff,
+                #00ff99
+            );
+        }
+
+        table{
+            width:100%;
+            margin-top:25px;
+        }
+
+        @media screen and (max-width:768px){
+
+            .stats-card h1{
+                font-size:32px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <h1>
+        📊 Attendance Dashboard
+    </h1>
+
+    <div class="top-section">
+
+        <div class="stats-card">
+
+            <h1>
+                {{ total_present }}
+            </h1>
+
+            <p>Total Present</p>
+
+        </div>
+
+        <div class="stats-card">
+
+            <h1>
+                {{ total_sessions }}
+            </h1>
+
+            <p>Total Sessions</p>
+
+        </div>
+
+        <div class="stats-card">
+
+            <h1>
+                {{ percentage }}%
+            </h1>
+
+            <p>Overall Attendance</p>
+
+        </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h2>
+            📈 Attendance Analytics
+        </h2>
+
+        <canvas id="attendanceChart"></canvas>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h2>
+            📚 Subject-wise Attendance
+        </h2>
+
+        <div class="subjects-grid">
+
+            {% for s in subject_percentages %}
+
+            <div class="subject-card">
+
+                <h2>{{ s[0] }}</h2>
+
+                <p>
+                    {{ s[1] }} /
+                    {{ s[2] }} Classes
+                </p>
+
+                <h3>
+                    {{ s[3] }}%
+                </h3>
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill"
+                         style="width:{{ s[3] }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <h2>
+            🕒 Attendance History
+        </h2>
+
+        <table>
+
+            <tr>
+                <th>Subject</th>
+                <th>Class</th>
+                <th>Submitted Time</th>
+            </tr>
+
+            {% for r in records %}
+
+            <tr>
+
+                <td>{{ r[0] }}</td>
+
+                <td>{{ r[1] }}</td>
+
+                <td>{{ r[2] }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <br>
+
+    <a href="/scan_qr"
+       class="btn">
+        Scan QR
+    </a>
+
+    <a href="/student_portal"
+       class="btn">
+        Back to Portal
+    </a>
+
+    <a href="/logout"
+       class="btn">
+        Logout
+    </a>
+
+</div>
+
+<script>
+
+const ctx =
+    document.getElementById(
+        'attendanceChart'
+    );
+
+new Chart(ctx, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+            'Present',
+            'Absent'
+        ],
+
+        datasets: [{
+
+            data: [
+                {{ total_present }},
+                {{ total_sessions - total_present }}
+            ],
+
+            backgroundColor: [
+                '#00ff99',
+                '#ff4d4d'
+            ],
+
+            borderWidth: 2
+
+        }]
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

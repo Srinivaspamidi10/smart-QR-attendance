@@ -1,0 +1,44 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Lecturer Login</title>
+
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
+    </head>
+
+    <body>
+
+    <div class="box">
+
+        <h2>Lecturer Login</h2>
+
+        <form method="POST" autocomplete="off">
+
+            <input type="email"
+                name="email"
+                placeholder="Enter Email"
+                autocomplete="off"
+                required>
+
+            <input type="password"
+                name="password"
+                placeholder="Enter Password"
+                autocomplete="new-password"
+                required>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <a href="/lecturer_register"
+        class="btn">
+            Create Account
+        </a>
+
+    </div>
+
+    </body>
+    </html>
