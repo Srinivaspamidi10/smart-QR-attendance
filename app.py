@@ -1081,7 +1081,7 @@ def send_session_email(session_code):
 
     conn.close()
 
-    attendance_link = request.host_url + "mark_attendance/" + session_code
+    attendance_link = "https://smart-qr-attendance.onrender.com/student/" + session_code
 
     sender_email = "YOUR_EMAIL@gmail.com"
     app_password = "YOUR_APP_PASSWORD"
