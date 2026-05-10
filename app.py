@@ -527,7 +527,6 @@ def student(code):
     if request.method == "POST":
         student_latitude = request.form.get("student_latitude")
         student_longitude = request.form.get("student_longitude")
-        selfie_data = request.form.get("selfie_data")
 
         if not student_latitude or not student_longitude:
             conn.close()
@@ -535,16 +534,6 @@ def student(code):
                 "message.html",
                 title="Location Required",
                 message="Please capture your location before submitting attendance.",
-                link=f"/student/{code}",
-                button="Try Again"
-            )
-
-        if not selfie_data:
-            conn.close()
-            return render_template(
-                "message.html",
-                title="Selfie Required",
-                message="Please capture your selfie before submitting attendance.",
                 link=f"/student/{code}",
                 button="Try Again"
             )
@@ -569,33 +558,48 @@ def student(code):
         filename = f"{uuid.uuid4()}.png"
         selfie_path = f"{SELFIE_FOLDER}/{filename}"
 
-        try:
-            image_data = selfie_data.split(",")[1]
-
-            with open(selfie_path, "wb") as f:
-                f.write(base64.b64decode(image_data))
-
-        except Exception:
-            conn.close()
-            return render_template(
-                "message.html",
-                title="Selfie Error",
-                message="Selfie could not be saved. Please capture again.",
-                link=f"/student/{code}",
-                button="Try Again"
-            )
-
         student_id = session["student_id"]
         name = session["student_name"]
         roll_no = session["student_roll"]
         department = session["student_department"]
         submitted_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+    # Prevent duplicate attendance
 
+        c.execute("""
+        SELECT * FROM attendance
+        WHERE session_code=? AND roll_no=?
+        """, (code, roll_no))
+
+        already_marked = c.fetchone()
+
+        if already_marked:
+
+            conn.close()
+
+            return render_template(
+                "mark_attendance.html",
+                error="⚠️ Attendance already marked. Duplicate/proxy attempt detected.",
+                code=code,
+                expires_at=expires_at
+            )
+            
+        if distance > 50:
+
+            conn.close()
+
+            return render_template(
+                "mark_attendance.html",
+                error="🚫 Proxy attendance detected. You are outside the allowed classroom radius.",
+                code=code,
+                expires_at=expires_at
+            )
+    
         try:
             c.execute("""
             INSERT INTO attendance
             (session_code, student_id, name, roll_no, department, submitted_at,
-             student_latitude, student_longitude, distance_meters, selfie_path)
+            student_latitude, student_longitude, distance_meters, selfie_path)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 code,

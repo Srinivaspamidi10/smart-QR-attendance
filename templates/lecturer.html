@@ -1,207 +1,259 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create QR Session</title>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Create QR Session</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-        }
+        <style>
+            body {
+                background: linear-gradient(135deg, #0f172a, #1e293b);
+            }
 
-        .create-wrapper {
-            width: 95%;
-            max-width: 650px;
-            margin: auto;
-        }
-
-        .create-card {
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(18px);
-            border-radius: 25px;
-            padding: 32px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
-            text-align: center;
-        }
-
-        .create-card h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .create-card p {
-            color: #dbeafe;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .step-box {
-            background: rgba(255,255,255,0.10);
-            padding: 20px;
-            border-radius: 18px;
-            margin: 18px 0;
-        }
-
-        .step-box h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        .status {
-            font-weight: bold;
-            color: #ffcc00;
-        }
-
-        .success {
-            color: #00ff99;
-        }
-
-        .form-row input,
-        .form-row select {
-            width: 100%;
-            max-width: 420px;
-            display: block;
-            margin: 12px auto;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: none;
-            outline: none;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
-
-        button,
-        .btn {
-            min-width: 190px;
-        }
-
-        @media screen and (max-width:768px) {
             .create-wrapper {
-                width: 92%;
+                width: 95%;
+                max-width: 650px;
+                margin: auto;
             }
 
             .create-card {
-                padding: 24px;
+                background: rgba(255,255,255,0.12);
+                backdrop-filter: blur(18px);
+                border-radius: 25px;
+                padding: 32px;
+                box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+                text-align: center;
             }
 
             .create-card h1 {
-                font-size: 25px;
+                font-size: 30px;
+                margin-bottom: 8px;
+            }
+
+            .create-card p {
+                color: #dbeafe;
+                font-size: 15px;
+                line-height: 1.5;
+            }
+
+            .step-box {
+                background: rgba(255,255,255,0.10);
+                padding: 20px;
+                border-radius: 18px;
+                margin: 18px 0;
+            }
+
+            .step-box h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
+
+            .status {
+                font-weight: bold;
+                color: #ffcc00;
+            }
+
+            .success {
+                color: #00ff99;
             }
 
             .form-row input,
             .form-row select {
-                max-width: 100%;
-                font-size: 16px;
+                width: 100%;
+                max-width: 420px;
+                display: block;
+                margin: 12px auto;
+                padding: 14px 16px;
+                border-radius: 12px;
+                border: none;
+                outline: none;
+                font-size: 15px;
+                box-sizing: border-box;
             }
-        }
-    </style>
-</head>
 
-<body>
+            button,
+            .btn {
+                min-width: 190px;
+            }
 
-<div class="create-wrapper">
+            @media screen and (max-width:768px) {
 
-    <div class="create-card">
+                .create-wrapper {
+                    width: 92%;
+                }
 
-        <h1>📷 Create Attendance QR</h1>
+                .create-card {
+                    padding: 24px;
+                }
 
-        <p>
-            Create a secure QR session with GPS-based anti-fake attendance protection.
-        </p>
+                .create-card h1 {
+                    font-size: 25px;
+                }
 
-        <form method="POST">
+                .form-row input,
+                .form-row select {
+                    max-width: 100%;
+                    font-size: 16px;
+                }
 
-            <div class="step-box">
-                <h3>Step 1: Enter Session Details</h3>
+            }
+        </style>
+    </head>
 
-                <div class="form-row">
-                    <input type="text"
-                           name="subject"
-                           placeholder="Enter Subject"
-                           required>
+    <body>
 
-                    <input type="text"
-                           name="class_name"
-                           placeholder="Enter Class Name"
-                           required>
+    <div class="create-wrapper">
 
-                    <select name="expiry_minutes" required>
-                        <option value="">Select QR Expiry Time</option>
-                        <option value="5">5 Minutes</option>
-                        <option value="10">10 Minutes</option>
-                        <option value="15">15 Minutes</option>
-                        <option value="30">30 Minutes</option>
-                        <option value="60">1 Hour</option>
-                    </select>
+        <div class="create-card">
+
+            <h1>📷 Create Attendance QR</h1>
+
+            <p>
+                Create a secure QR session with GPS-based anti-fake attendance protection.
+            </p>
+
+            <form method="POST">
+
+                <div class="step-box">
+
+                    <h3>Step 1: Enter Session Details</h3>
+
+                    <div class="form-row">
+
+                        <input type="text"
+                            name="subject"
+                            placeholder="Enter Subject"
+                            required>
+
+                        <input type="text"
+                            name="class_name"
+                            placeholder="Enter Class Name"
+                            required>
+
+                        <select name="expiry_minutes" required>
+
+                            <option value="">
+                                Select QR Expiry Time
+                            </option>
+
+                            <option value="5">
+                                5 Minutes
+                            </option>
+
+                            <option value="10">
+                                10 Minutes
+                            </option>
+
+                            <option value="15">
+                                15 Minutes
+                            </option>
+
+                            <option value="30">
+                                30 Minutes
+                            </option>
+
+                            <option value="60">
+                                1 Hour
+                            </option>
+
+                        </select>
+
+                    </div>
+
                 </div>
-            </div>
 
-            <div class="step-box">
-                <h3>Step 2: Capture Class Location</h3>
+                <div class="step-box">
 
-                <p id="locationStatus" class="status">
-                    ❌ Location not captured
-                </p>
+                    <h3>Step 2: Capture Class Location</h3>
 
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
+                    <p id="locationStatus"
+                    class="status">
+                        📍 Detecting classroom location automatically...
+                    </p>
 
-                <button type="button" onclick="captureLocation()">
-                    Capture Location
-                </button>
-            </div>
+                    <input type="hidden"
+                        name="latitude"
+                        id="latitude">
 
-            <div class="step-box">
-                <h3>Step 3: Generate QR</h3>
+                    <input type="hidden"
+                        name="longitude"
+                        id="longitude">
 
-                <button type="submit">
-                    Generate QR Code
-                </button>
-            </div>
+                </div>
 
-        </form>
+                <div class="step-box">
 
-        <a href="/lecturer_portal" class="btn">
-            Back to Portal
-        </a>
+                    <h3>Step 3: Generate QR</h3>
+
+                    <button type="submit">
+                        Generate QR Code
+                    </button>
+
+                </div>
+
+            </form>
+
+            <a href="/lecturer_portal"
+            class="btn">
+                Back to Portal
+            </a>
+
+        </div>
 
     </div>
 
-</div>
+    <script>
 
-<script>
-function captureLocation() {
-    const status = document.getElementById("locationStatus");
+    window.onload = function() {
+        captureLocation();
+    };
 
-    if (!navigator.geolocation) {
-        status.innerHTML = "❌ GPS not supported.";
-        return;
+    function captureLocation() {
+
+        const status =
+            document.getElementById("locationStatus");
+
+        if (!navigator.geolocation) {
+
+            status.innerHTML =
+                "❌ GPS not supported.";
+
+            return;
+        }
+
+        status.innerHTML =
+            "📍 Detecting classroom location automatically...";
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+                document.getElementById("latitude").value =
+                    position.coords.latitude;
+
+                document.getElementById("longitude").value =
+                    position.coords.longitude;
+
+                status.innerHTML =
+                    "✅ Classroom location captured automatically";
+
+                status.classList.add("success");
+
+            },
+
+            function(error) {
+
+                status.innerHTML =
+                    "❌ Please allow location permission.";
+
+            }
+
+        );
+
     }
 
-    status.innerHTML = "Getting location...";
+    </script>
 
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            document.getElementById("latitude").value =
-                position.coords.latitude;
-
-            document.getElementById("longitude").value =
-                position.coords.longitude;
-
-            status.innerHTML =
-                "✅ Location captured successfully";
-
-            status.classList.add("success");
-        },
-        function(error) {
-            status.innerHTML =
-                "❌ Please allow location permission.";
-        }
-    );
-}
-</script>
-
-</body>
-</html>
+    </body>
+    </html>
