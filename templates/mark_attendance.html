@@ -1,39 +1,122 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mark Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Mark Attendance</title>
 
-<div class="box">
-    <h2>Mark Attendance</h2>
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
+    </head>
 
-    <p><b>Subject:</b> {{ class_session[1] }}</p>
-    <p><b>Class:</b> {{ class_session[2] }}</p>
+    <body>
 
-    <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="latitude" id="latitude">
-        <input type="hidden" name="longitude" id="longitude">
+    <div class="box">
 
-        <label>Upload Selfie:</label>
-        <input type="file" name="selfie" accept="image/*" capture="user" required>
+        <h2>Mark Attendance</h2>
 
-        {% if not hide_submit %}
-<button type="submit"
-        id="submitBtn">
-    Submit Attendance
-</button>
-{% endif %}
-    </form>
-</div>
+        <p>
+            <b>Subject:</b>
+            {{ class_session[1] }}
+        </p>
 
-<script>
-navigator.geolocation.getCurrentPosition(function(position) {
-    document.getElementById("latitude").value = position.coords.latitude;
-    document.getElementById("longitude").value = position.coords.longitude;
-});
-</script>
+        <p>
+            <b>Class:</b>
+            {{ class_session[2] }}
+        </p>
 
-</body>
-</html>
+        {% if error %}
+        <div style="
+            background:#fee2e2;
+            color:#991b1b;
+            padding:15px;
+            border-radius:12px;
+            margin-bottom:15px;
+            font-weight:bold;
+        ">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <input type="hidden"
+                name="latitude"
+                id="latitude">
+
+            <input type="hidden"
+                name="longitude"
+                id="longitude">
+
+            <p id="locationStatus">
+                📍 Click below to allow location
+            </p>
+
+            <button type="button"
+                    onclick="captureLocation()">
+                📍 Allow / Capture Location
+            </button>
+
+            <br><br>
+
+            {% if not hide_submit %}
+            <button type="submit"
+                    id="submitBtn">
+                Submit Attendance
+            </button>
+            {% endif %}
+
+        </form>
+
+    </div>
+
+    <script>
+
+    function captureLocation(){
+
+        if(!navigator.geolocation){
+
+            document.getElementById(
+                "locationStatus"
+            ).innerHTML =
+                "❌ GPS not supported.";
+
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position){
+
+                document.getElementById(
+                    "latitude"
+                ).value =
+                    position.coords.latitude;
+
+                document.getElementById(
+                    "longitude"
+                ).value =
+                    position.coords.longitude;
+
+                document.getElementById(
+                    "locationStatus"
+                ).innerHTML =
+                    "✅ Location captured successfully";
+
+            },
+
+            function(error){
+
+                document.getElementById(
+                    "locationStatus"
+                ).innerHTML =
+                    "❌ Please allow location permission.";
+
+            }
+
+        );
+
+    }
+
+    </script>
+
+    </body>
+    </html>
