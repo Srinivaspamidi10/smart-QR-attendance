@@ -578,22 +578,24 @@ def student(code):
             conn.close()
 
             return render_template(
-                "mark_attendance.html",
-                error="⚠️ Attendance already marked. Duplicate/proxy attempt detected.",
-                code=code,
-                expires_at=expires_at
-            )
+    "mark_attendance.html",
+    error="⚠️ Attendance already marked. You cannot submit attendance twice.",
+    code=code,
+    expires_at=expires_at,
+    hide_submit=True
+)
             
         if distance > 50:
 
             conn.close()
 
             return render_template(
-                "mark_attendance.html",
-                error="🚫 Proxy attendance detected. You are outside the allowed classroom radius.",
-                code=code,
-                expires_at=expires_at
-            )
+    "mark_attendance.html",
+    error="🚫 Proxy attendance detected. You are outside the allowed classroom radius.",
+    code=code,
+    expires_at=expires_at,
+    hide_submit=True
+)
     
         try:
             c.execute("""

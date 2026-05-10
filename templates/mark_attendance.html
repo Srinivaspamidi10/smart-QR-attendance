@@ -19,7 +19,12 @@
         <label>Upload Selfie:</label>
         <input type="file" name="selfie" accept="image/*" capture="user" required>
 
-        <button type="submit">Submit Attendance</button>
+        {% if not hide_submit %}
+<button type="submit"
+        id="submitBtn">
+    Submit Attendance
+</button>
+{% endif %}
     </form>
 </div>
 
