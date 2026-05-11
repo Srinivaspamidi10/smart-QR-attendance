@@ -245,7 +245,7 @@ def lecturer():
         conn.commit()
         conn.close()
 
-        qr_link = request.host_url + "student/" + unique_code
+        qr_link = "https://smart-qr-attendance.onrender.com/student/" + unique_code
         qr = qrcode.make(qr_link)
         qr.save(f"{QR_FOLDER}/{unique_code}.png")
 
