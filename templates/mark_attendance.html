@@ -2,121 +2,37 @@
 <html>
 <head>
     <title>Mark Attendance</title>
-
-    <link rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
 <div class="box">
-
     <h2>Mark Attendance</h2>
 
-    <p>
-        <b>Subject:</b>
-        {{ class_session[1] }}
-    </p>
+    <p><b>Subject:</b> {{ class_session[1] }}</p>
+    <p><b>Class:</b> {{ class_session[2] }}</p>
 
-    <p>
-        <b>Class:</b>
-        {{ class_session[2] }}
-    </p>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
 
-    {% if error %}
-    <div style="
-        background:#fee2e2;
-        color:#991b1b;
-        padding:15px;
-        border-radius:12px;
-        margin-bottom:15px;
-        font-weight:bold;
-    ">
-        {{ error }}
-    </div>
-    {% endif %}
-
-    <form method="POST">
-
-        <input type="hidden"
-            name="latitude"
-            id="latitude">
-
-        <input type="hidden"
-            name="longitude"
-            id="longitude">
-
-        <p id="locationStatus">
-            📍 Click below to allow location
-        </p>
-
-        <button type="button"
-                onclick="captureLocation()">
-            📍 Allow / Capture Location
-        </button>
-
-        <br><br>
+        <label>Upload Selfie:</label>
+        <input type="file" name="selfie" accept="image/*" capture="user" required>
 
         {% if not hide_submit %}
-        <button type="submit"
-                id="submitBtn"
-                style="opacity:0.5; pointer-events:none;">
-            Submit Attendance
-        </button>
-        {% endif %}
-
+<button type="submit"
+        id="submitBtn">
+    Submit Attendance
+</button>
+{% endif %}
     </form>
-
 </div>
 
 <script>
-
-function captureLocation(){
-
-    if(!navigator.geolocation){
-
-        document.getElementById("locationStatus").innerHTML =
-            "❌ GPS not supported.";
-
-        return;
-    }
-
-    document.getElementById("locationStatus").innerHTML =
-        "📍 Requesting location permission...";
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position){
-
-            document.getElementById("latitude").value =
-                position.coords.latitude;
-
-            document.getElementById("longitude").value =
-                position.coords.longitude;
-
-            document.getElementById("locationStatus").innerHTML =
-                "✅ Location captured successfully";
-
-            const btn = document.getElementById("submitBtn");
-
-            if(btn){
-                btn.style.opacity = "1";
-                btn.style.pointerEvents = "auto";
-            }
-
-        },
-
-        function(error){
-
-            document.getElementById("locationStatus").innerHTML =
-                "❌ Please allow location permission.";
-
-        }
-
-    );
-
-}
-
+navigator.geolocation.getCurrentPosition(function(position) {
+    document.getElementById("latitude").value = position.coords.latitude;
+    document.getElementById("longitude").value = position.coords.longitude;
+});
 </script>
 
 </body>

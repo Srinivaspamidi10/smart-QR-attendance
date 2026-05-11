@@ -245,7 +245,7 @@ def lecturer():
         conn.commit()
         conn.close()
 
-        qr_link = "https://smart-qr-attendance.onrender.com/student/" + unique_code
+        qr_link = request.host_url + "student/" + unique_code
         qr = qrcode.make(qr_link)
         qr.save(f"{QR_FOLDER}/{unique_code}.png")
 
@@ -590,12 +590,11 @@ def student(code):
             conn.close()
 
             return render_template(
-    "mark_attendance.html",
-    error="🚫 Proxy attendance detected. You are outside the allowed classroom radius.",
-    code=code,
-    expires_at=expires_at,
-    hide_submit=True
-)
+                "mark_attendance.html",
+                error="🚫 Proxy attendance detected. You are outside the allowed classroom radius.",
+                code=code,
+                expires_at=expires_at
+            )
     
         try:
             c.execute("""
@@ -1081,7 +1080,7 @@ def send_session_email(session_code):
 
     conn.close()
 
-    attendance_link = "https://smart-qr-attendance.onrender.com/student/" + session_code
+    attendance_link = request.host_url + "mark_attendance/" + session_code
 
     sender_email = "YOUR_EMAIL@gmail.com"
     app_password = "YOUR_APP_PASSWORD"
