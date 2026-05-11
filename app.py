@@ -9,9 +9,6 @@ app = Flask(__name__)
 
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
 
-app = Flask(__name__)
-app.secret_key = "smart_qr_secret_key"
-
 app.secret_key = "smart_qr_secret_key"
 
 QR_FOLDER = "static/qrcodes"
