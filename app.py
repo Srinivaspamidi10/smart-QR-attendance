@@ -1080,7 +1080,8 @@ def send_session_email(session_code):
 
     conn.close()
 
-    attendance_link = request.host_url + "mark_attendance/" + session_code
+    attendance_link = "https://smart-qr-attendance.onrender.com/student/" + session_code
+    qr_link = "https://smart-qr-attendance.onrender.com/student/" + session_code
 
     sender_email = "YOUR_EMAIL@gmail.com"
     app_password = "YOUR_APP_PASSWORD"
@@ -1088,26 +1089,31 @@ def send_session_email(session_code):
     for student in students:
 
         msg = EmailMessage()
+
         msg["Subject"] = "Attendance Link - " + subject
+
         msg["From"] = sender_email
+
         msg["To"] = student[0]
 
         msg.set_content(f"""
-Hello Student,
+    Hello Student,
 
-Attendance session is active.
+    Attendance session is active.
 
-Subject: {subject}
-Class: {class_name}
+    Subject: {subject}
+    Class: {class_name}
 
-Mark your attendance using this link:
-{attendance_link}
+    Mark your attendance using this link:
+    {attendance_link}
 
-Thank you.
-""")
+    Thank you.
+    """)
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+
             smtp.login(sender_email, app_password)
+
             smtp.send_message(msg)
 
     return "Attendance email sent to all students"
